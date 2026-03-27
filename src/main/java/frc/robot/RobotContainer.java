@@ -19,6 +19,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
+import frc.robot.subsystems.TransferSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -35,6 +37,8 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final TransferSubsystem m_transfer = new TransferSubsystem();
+  private final LauncherSubsystem m_launcher = new LauncherSubsystem();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -78,6 +82,16 @@ public class RobotContainer {
         .onTrue(new InstantCommand(
             () -> m_robotDrive.zeroHeading(),
             m_robotDrive));
+
+    //Right Bumper pressed and held, turn on launcher
+    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    .whileTrue(new RunCommand(() -> m_launcher.runLauncher(0.7), m_launcher))
+    .onFalse(new InstantCommand(() -> m_launcher.stop(), m_launcher));
+
+    new JoystickButton(m_driverController, XboxController.Button.kA.value)
+    .whileTrue(new RunCommand(() -> m_transfer.transferIn(), m_transfer))
+    .onFalse(new InstantCommand(() -> m_transfer.transferStop(), m_transfer));
+
   }
 
   /**
