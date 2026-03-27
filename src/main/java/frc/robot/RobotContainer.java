@@ -88,8 +88,14 @@ public class RobotContainer {
     .whileTrue(new RunCommand(() -> m_launcher.runLauncher(0.7), m_launcher))
     .onFalse(new InstantCommand(() -> m_launcher.stop(), m_launcher));
 
+    //A to launch
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
     .whileTrue(new RunCommand(() -> m_transfer.transferIn(), m_transfer))
+    .onFalse(new InstantCommand(() -> m_transfer.transferStop(), m_transfer));
+
+    //B to reverse launch (in case any FUELs get stuck)
+    new JoystickButton(m_driverController, XboxController.Button.kB.value)
+    .whileTrue(new RunCommand(() -> m_transfer.transferOut(), m_transfer))
     .onFalse(new InstantCommand(() -> m_transfer.transferStop(), m_transfer));
 
   }
